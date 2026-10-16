@@ -14,6 +14,7 @@ struct RepoItem: Decodable {
     let fork: Bool
     let archived: Bool
     let hasDiscussions: Bool?
+    var defaultBranch: String?
     let openIssuesCount: Int
     let stargazersCount: Int
     let forksCount: Int
@@ -29,6 +30,7 @@ struct RepoItem: Decodable {
         case fork
         case archived
         case hasDiscussions = "has_discussions"
+        case defaultBranch = "default_branch"
         case openIssuesCount = "open_issues_count"
         case stargazersCount = "stargazers_count"
         case forksCount = "forks_count"

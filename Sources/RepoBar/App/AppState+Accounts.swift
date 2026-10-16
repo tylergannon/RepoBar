@@ -201,6 +201,7 @@ extension AppState {
     }
 
     private func syncPrimaryGitHubClientToActiveAccount() async {
+        self.restoreWorkflowTrackingState()
         if let active = self.accountManager.activeAccount() {
             if let client = self.accountManager.activeClient() {
                 self.github = client

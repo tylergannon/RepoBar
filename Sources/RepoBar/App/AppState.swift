@@ -15,6 +15,8 @@ final class AppState {
     let settingsStore: SettingsStore
     let gitHubPullRequestNotificationRunner = GitHubPullRequestNotificationRunner()
     let gitHubReleaseNotificationRunner = GitHubReleaseNotificationRunner()
+    let workflowTrackingStore = WorkflowTrackingStore()
+    var workflowRefreshID = UUID()
     let localRepoManager = LocalRepoManager()
     let menuRefreshInterval: TimeInterval = 30
     var refreshTask: Task<Void, Never>?
@@ -50,6 +52,7 @@ final class AppState {
         self.settingsStore = settingsStore
         self.accountManager = accountManager ?? AccountManager()
         self.session.settings = self.settingsStore.load()
+        self.restoreWorkflowTrackingState()
         self.reloadRateLimitCacheSummary()
         RepoBarLogging.bootstrapIfNeeded()
         RepoBarLogging.configure(

@@ -68,6 +68,7 @@ extension AppState {
                     await MainActor.run { self.session.account = .loggedIn(user) }
                 }
             }
+            await self.refreshWorkflowMonitoring()
             await self.processGitHubPullRequestNotifications()
             await self.processGitHubReleaseNotifications()
             let repos = try await self.fetchActivityRepos()
@@ -282,6 +283,7 @@ extension AppState {
         lastError: String?
     ) async {
         await MainActor.run {
+            self.session.workflowStates = [:]
             self.session.account = .loggedOut
             self.session.hasStoredTokens = false
             self.session.accessibleRepositories = []
@@ -319,6 +321,7 @@ extension AppState {
     }
 
     private func updateSession(with repos: [Repository], now: Date) async {
+        let repos = self.repositoriesWithWorkflowState(repos)
         let index = self.menuDisplayIndex(for: repos, now: now)
         await MainActor.run {
             self.session.repositories = repos
@@ -380,7 +383,7 @@ extension AppState {
             await MainActor.run {
                 guard self.refreshTaskToken == token else { return }
 
-                let merged = self.mergeHydrated(hydrated, into: self.session.repositories)
+                let merged = self.repositoriesWithWorkflowState(self.mergeHydrated(hydrated, into: self.session.repositories))
                 self.session.repositories = merged
                 let capturedAt = self.session.menuSnapshot?.capturedAt ?? Date()
                 self.session.menuSnapshot = MenuSnapshot(

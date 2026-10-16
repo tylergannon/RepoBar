@@ -74,6 +74,7 @@ extension AppState {
         guard self.session.settings.repoList.pinRepository(fullName) else { return }
 
         self.settingsStore.save(self.session.settings)
+        self.restoreWorkflowTrackingState()
         await self.refresh()
     }
 
@@ -83,6 +84,7 @@ extension AppState {
             self.normalizedFullName($0) == normalized
         }
         self.settingsStore.save(self.session.settings)
+        self.restoreWorkflowTrackingState()
         await self.refresh()
     }
 
@@ -101,6 +103,7 @@ extension AppState {
         self.session.repositories.removeAll {
             self.normalizedFullName($0.fullName) == normalized
         }
+        self.restoreWorkflowTrackingState()
         await self.refresh()
     }
 
@@ -110,6 +113,7 @@ extension AppState {
             self.normalizedFullName($0) == normalized
         }
         self.settingsStore.save(self.session.settings)
+        self.restoreWorkflowTrackingState()
         await self.refresh()
     }
 
@@ -139,6 +143,7 @@ extension AppState {
         }
 
         self.settingsStore.save(self.session.settings)
+        self.restoreWorkflowTrackingState()
         await self.refresh()
     }
 

@@ -41,6 +41,16 @@ Each repository opens a submenu with recent GitHub activity and, when a local ch
 
 **Preferences → Repositories** searches the repositories available to the active account. Search covers names, descriptions, languages, and topics; visibility rules remain visible when an account temporarily loses access, which makes permission problems easier to diagnose.
 
+## Workflow failure monitoring
+
+Pinned repositories are monitored even when they are outside the currently visible menu list. Each active Actions workflow is tracked separately on the repository's actual default branch. A red menu-bar warning and count remain while any tracked workflow has a known failure; a successful unrelated workflow cannot clear it. API errors and incomplete refreshes retain known failures and mark the tooltip as stale.
+
+Use **Preferences → Notifications → Workflow monitoring** to select a branch or limit a pinned repository to numeric workflow IDs or exact `.github/workflows/file.yml` paths (comma separated). Blank values use the default branch and all active workflows. Changing that selection establishes a new baseline. Failure and recovery notifications are independently opt-in and initial observations are silent. Release notifications continue to work independently.
+
+Monitoring considers `failure`, `timed_out`, `action_required`, and `startup_failure` decisive failures. Only `success` resolves a previous failure for that same workflow. Newer queued/in-progress runs, cancellations, skipped or neutral runs, and unknown conclusions retain its previous decisive result. Run number and attempt order prevent an older rerun from replacing a newer result. Disabled/deleted workflows retire after a complete catalog refresh, unless explicitly selected; unmatched selections remain incomplete. This monitors Actions workflows, rather than GitHub's combined commit badge or external status contexts.
+
+Requests paginate the workflow catalog (up to 1,000 workflows), then each workflow's branch-specific history until a decisive result is found (up to 500 runs per workflow). Hitting a bound reports incomplete data instead of claiming recovery. A first observation can recover the latest decisive result within that history window, but is not a log of every historical failure or every transition between polls. State is isolated by account, host, repository, and selection and persisted locally. Notification transitions are saved before delivery attempts, preventing repeat alerts after restart; an interrupted or denied delivery is not retried. No telemetry is added, and AI summaries remain off by default.
+
 ## Authentication and private repositories
 
 RepoBar supports GitHub.com and GitHub Enterprise. GitHub.com login uses a GitHub App user token, so access is limited by both the signed-in user and the repositories where the [RepoBar GitHub App](https://github.com/apps/repobar/installations/new) is installed.

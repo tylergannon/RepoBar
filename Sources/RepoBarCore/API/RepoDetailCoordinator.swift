@@ -87,7 +87,7 @@ actor RepoDetailCoordinator {
             ? Self.capture { try await graphQL.repoSummary(owner: resolvedOwner, name: resolvedName) }
             : .success(nil)
         async let ciResult: Result<CIStatusDetails, Error> = shouldFetchCI
-            ? Self.capture { try await restAPI.ciStatus(owner: resolvedOwner, name: resolvedName) }
+            ? Self.capture { try await restAPI.ciStatus(owner: resolvedOwner, name: resolvedName, defaultBranch: details.defaultBranch) }
             : .success(cachedCiDetails)
         async let activityResult: Result<ActivitySnapshot, Error> = shouldFetchActivity
             ? Self.capture { try await restAPI.recentActivity(owner: resolvedOwner, name: resolvedName, limit: 25) }
