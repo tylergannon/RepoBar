@@ -72,6 +72,7 @@ struct ActionsRunsResponse: Decodable {
         let name: String?
         let displayTitle: String?
         let runNumber: Int?
+        var runAttempt: Int?
         let event: String?
         let headBranch: String?
         let status: String?
@@ -105,6 +106,7 @@ struct ActionsRunsResponse: Decodable {
             case name
             case displayTitle = "display_title"
             case runNumber = "run_number"
+            case runAttempt = "run_attempt"
             case event
             case headBranch = "head_branch"
             case status

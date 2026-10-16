@@ -486,6 +486,10 @@ public actor GitHubClient {
         try await self.restAPI.recentReleases(owner: owner, name: name, limit: limit)
     }
 
+    public func workflowSnapshot(owner: String, name: String, selection: WorkflowSelection = WorkflowSelection()) async throws -> WorkflowSnapshot {
+        try await self.restAPI.workflowSnapshot(owner: owner, name: name, selection: selection)
+    }
+
     public func recentWorkflowRuns(owner: String, name: String, limit: Int = 20) async throws -> [RepoWorkflowRunSummary] {
         try await self.restAPI.recentWorkflowRuns(owner: owner, name: name, limit: limit)
     }

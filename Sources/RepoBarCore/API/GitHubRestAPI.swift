@@ -326,23 +326,13 @@ struct GitHubRestAPI {
             "For private organization repositories, install the RepoBar GitHub App on that organization/repository or sign in with a PAT that has repo access."
     }
 
-    func ciStatus(owner: String, name: String) async throws -> CIStatusDetails {
-        let token = try await tokenProvider()
-        let baseURL = await apiHost()
-        var components = URLComponents(
-            url: baseURL.appending(path: "/repos/\(owner)/\(name)/actions/runs"),
-            resolvingAgainstBaseURL: false
-        )!
-        components.queryItems = [
-            URLQueryItem(name: "per_page", value: "1"),
-            URLQueryItem(name: "branch", value: "main")
-        ]
-        let (data, _) = try await authorizedGet(url: components.url!, token: token)
-        let runs = try GitHubDecoding.decode(ActionsRunsResponse.self, from: data)
-        guard let run = runs.workflowRuns.first else { return CIStatusDetails(status: .unknown, runCount: runs.totalCount) }
-
-        let status = GitHubStatusMapper.ciStatus(fromStatus: run.status, conclusion: run.conclusion)
-        return CIStatusDetails(status: status, runCount: runs.totalCount)
+    func ciStatus(owner: String, name: String, defaultBranch: String? = nil) async throws -> CIStatusDetails {
+        let snapshot = try await self.workflowSnapshot(owner: owner, name: name, defaultBranch: defaultBranch)
+        let result = WorkflowTracker.update(
+            WorkflowTrackingState(), snapshot: snapshot, scope: snapshot.branch,
+            notifyFailures: false, notifyRecoveries: false
+        )
+        return CIStatusDetails(status: result.state.status, runCount: nil)
     }
 
     func recentActivity(owner: String, name: String, limit: Int) async throws -> ActivitySnapshot {

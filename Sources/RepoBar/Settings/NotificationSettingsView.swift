@@ -7,6 +7,8 @@ struct NotificationSettingsView: View {
 
     var body: some View {
         Form {
+            WorkflowMonitoringSettingsView(session: self.session, appState: self.appState)
+
             Section {
                 Toggle("Pull request notifications", isOn: self.$session.settings.gitHubPullRequestNotifications.enabled)
                     .onChange(of: self.session.settings.gitHubPullRequestNotifications.enabled) { _, enabled in

@@ -4,6 +4,12 @@ import RepoBarCore
 
 @Observable
 final class Session {
+    var workflowStates: [String: WorkflowTrackingState] = [:]
+
+    var workflowFailureCount: Int {
+        Set(self.settings.repoList.pinnedRepositories.map { $0.lowercased() }).reduce(0) { $0 + (self.workflowStates[$1]?.failureCount ?? 0) }
+    }
+
     var account: AccountState = .loggedOut
     var hasStoredTokens = false
     var accessibleRepositories: [Repository] = []

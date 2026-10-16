@@ -238,6 +238,11 @@ final class StatusBarMenuManager: NSObject, NSMenuDelegate {
     private func applyStatusItemAppearance() {
         guard let button = self.statusItem?.button else { return }
 
+        let staleWorkflows = self.appState.session.workflowStates.values.contains { $0.stale && $0.failureCount > 0 }
+        if WorkflowFailureIconRenderer.apply(to: button, count: self.appState.session.workflowFailureCount, stale: staleWorkflows) {
+            return
+        }
+
         let juice = RateLimitJuice(
             diagnostics: self.appState.session.rateLimitDiagnostics,
             cacheSummary: self.appState.session.rateLimitCacheSummary

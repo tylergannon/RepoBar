@@ -7,6 +7,7 @@ public struct UserSettings: Equatable, Codable {
     public var localProjects = LocalProjectsSettings()
     public var gitHubReferenceMonitor = GitHubReferenceMonitorSettings()
     public var aiSummaries = AISummarySettings()
+    public var workflowMonitoring = WorkflowMonitoringSettings()
     public var gitHubPullRequestNotifications = GitHubPullRequestNotificationSettings()
     public var gitHubReleaseNotifications = GitHubReleaseNotificationSettings()
     public var githubArchives = GitHubArchiveSettings()
@@ -38,6 +39,7 @@ public struct UserSettings: Equatable, Codable {
         case repoList
         case localProjects
         case gitHubReferenceMonitor
+        case workflowMonitoring
         case aiSummaries
         case gitHubPullRequestNotifications
         case gitHubReleaseNotifications
@@ -71,6 +73,7 @@ public struct UserSettings: Equatable, Codable {
         self.gitHubReferenceMonitor = try container.decodeIfPresent(GitHubReferenceMonitorSettings.self, forKey: .gitHubReferenceMonitor)
             ?? container.decodeIfPresent(GitHubReferenceMonitorSettings.self, forKey: .legacyIssueNumberMonitor)
             ?? GitHubReferenceMonitorSettings()
+        self.workflowMonitoring = try container.decodeIfPresent(WorkflowMonitoringSettings.self, forKey: .workflowMonitoring) ?? WorkflowMonitoringSettings()
         self.aiSummaries = try container.decodeIfPresent(AISummarySettings.self, forKey: .aiSummaries) ?? AISummarySettings()
         self.gitHubPullRequestNotifications = try container.decodeIfPresent(
             GitHubPullRequestNotificationSettings.self,
@@ -121,6 +124,7 @@ public struct UserSettings: Equatable, Codable {
         try container.encode(self.repoList, forKey: .repoList)
         try container.encode(self.localProjects, forKey: .localProjects)
         try container.encode(self.gitHubReferenceMonitor, forKey: .gitHubReferenceMonitor)
+        try container.encode(self.workflowMonitoring, forKey: .workflowMonitoring)
         try container.encode(self.aiSummaries, forKey: .aiSummaries)
         try container.encode(self.gitHubPullRequestNotifications, forKey: .gitHubPullRequestNotifications)
         try container.encode(self.gitHubReleaseNotifications, forKey: .gitHubReleaseNotifications)
